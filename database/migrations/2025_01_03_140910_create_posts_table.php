@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('title'); // Post title
             $table->text('content'); // Post content
             $table->foreignId('user_id')->constrained()->onDelete('cascade'); // User who created the post
-            $table->foreignId('categories_id')->constrained()->onDelete('cascade'); // Category of the post
+            $table->foreignId('category_id')->constrained()->onDelete('cascade'); // Category of the post
             $table->timestamps();
         });
     }

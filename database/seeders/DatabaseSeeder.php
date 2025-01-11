@@ -39,5 +39,10 @@ class DatabaseSeeder extends Seeder
             'phone' => '123456789',
             'role' => 'student',
         ]);
+        
+
+        $this->call([
+            CategorySeeder::class,
+        ]);
     }
 }

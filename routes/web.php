@@ -9,6 +9,7 @@ use App\Http\Controllers\MessageController;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create'); // Show create post form
 
 Auth::routes();
 
@@ -20,10 +21,8 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::get('/posts', [PostController::class, 'index'])->name('posts.index'); // Show all posts
 Route::get('/posts/{id}', [PostController::class, 'show'])->name('posts.show');
 
-
 // Authenticated Routes
 Route::middleware(['auth'])->group(function () {
-    Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create'); // Show create post form
     Route::post('/posts', [PostController::class, 'store'])->name('posts.store'); // Store new post
     Route::get('/posts/{post}/edit', [PostController::class, 'edit'])->name('posts.edit'); // Show edit form
     Route::put('/posts/{post}', [PostController::class, 'update'])->name('posts.update'); // Update post
@@ -33,6 +32,13 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/student-dashboard', [DashboardController::class, 'studentDashboard'])->name('student.dashboard');
     Route::get('/tutor-dashboard', [DashboardController::class, 'tutorDashboard'])->name('tutor.dashboard');
+    
+    // Routes for viewing and sending chat messages (for both student and tutor)
+    Route::get('chat/{chatUserId}', [DashboardController::class, 'showChat'])->name('chat.show'); // View chat for students
+    Route::post('chat/{chatUserId}/send', [DashboardController::class, 'sendMessage'])->name('chat.send'); // Send message from student
+
+    Route::get('chat/tutor/{chatUserId}', [DashboardController::class, 'showChatTutor'])->name('chat.show.tutor'); // View chat for tutors
+    Route::post('chat/tutor/{chatUserId}/send', [DashboardController::class, 'sendMessageTutor'])->name('chat.send.tutor'); // Send message from tutor
 });
 
 // Routes for messages
@@ -47,6 +53,3 @@ Route::get('/messages/{message}', [MessageController::class, 'show'])->name('mes
 
 // Route for viewing all messages
 Route::get('/messages', [MessageController::class, 'index'])->name('messages.index');
-
-
-
