@@ -2,6 +2,11 @@
 
 @section('content')
 <div class="container" style="max-width: 600px; margin: 0 auto;">
+    <!-- Back to Dashboard Button -->
+    <div class="text-left mb-3">
+        <a href="{{ route('student.dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+
     <h1 class="text-center">Chat with {{ $chatUser->name }}</h1>
 
     <div class="chat-box" style="
@@ -50,8 +55,4 @@
 
     <form action="{{ route('chat.send', $chatUser->id) }}" method="POST" class="mt-3">
         @csrf
-        <textarea name="message" class="form-control mb-2" rows="3" placeholder="Type your message..." required></textarea>
-        <button type="submit" class="btn btn-primary">Send</button>
-    </form>
-</div>
-@endsection
+        <textarea name="message" class="form-control mb-2" rows="3" place

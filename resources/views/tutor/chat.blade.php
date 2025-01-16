@@ -2,6 +2,11 @@
 
 @section('content')
 <div class="container" style="max-width: 600px; margin: 0 auto;">
+    <!-- Back to Dashboard Button -->
+    <div class="text-left mb-3">
+        <a href="{{ route('tutor.dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+
     <h1 class="text-center">Chat with {{ $chatUser->name }}</h1>
 
     <div class="chat-box" style="

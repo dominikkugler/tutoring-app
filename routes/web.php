@@ -6,6 +6,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\TutorTeachingController; // Import the TutorTeachingController
+use App\Http\Controllers\TutorAvailabilityController; // Import the TutorAvailabilityController
 
 Route::get('/', function () {
     return view('welcome');
@@ -43,6 +44,24 @@ Route::middleware(['auth'])->group(function () {
         }
         return redirect('/')->with('error', 'You are not authorized to access this page.');
     })->name('tutor.dashboard');
+
+    Route::get('/availabilities/create', function() {
+        if (auth()->user()->isTutor()) {
+            return app(TutorAvailabilityController::class)->create();
+        }
+        return redirect('/')->with('error', 'You are not authorized to access this page.');
+    })->name('availabilities.create');
+
+    // Store the availability (handle POST request)
+    Route::post('/availabilities', [TutorAvailabilityController::class, 'store'])->name('availabilities.store');
+
+
+    Route::delete('/availabilities/{availability}', function($availability) {
+        if (auth()->user()->isTutor()) {
+            return app(TutorAvailabilityController::class)->destroy($availability);
+        }
+        return redirect('/')->with('error', 'You are not authorized to access this page.');
+    })->name('availabilities.destroy');
 
     // Chat routes (for students and tutors)
     Route::get('chat/{chatUserId}', [DashboardController::class, 'showChat'])->name('chat.show'); // View chat for students

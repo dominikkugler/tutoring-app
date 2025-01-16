@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Message;
 use App\Models\User;
+use App\Models\TutorAvailability;
+use Carbon\Carbon;
 
 
 class DashboardController extends Controller
@@ -52,16 +54,30 @@ class DashboardController extends Controller
         $posts = $user->posts()->with('category')->get();
 
         // Chats for tutor
-        $chats = $user->sentMessages()
-                      ->with('recipient')
-                      ->get()
-                      ->keyBy('recipient_id');
+        $chats = Message::where('sender_id', $user->id)
+                        ->orWhere('recipient_id', $user->id)
+                        ->get()
+                        ->map(function ($message) use ($user) {
+                            return $message->sender_id == $user->id ? $message->recipient : $message->sender;
+                        })
+                        ->unique('id');  // Ensure each chat user is unique
 
         // Fetch teachings for the tutor
         $teachings = $user->teachings()->with('category')->get();
 
-        return view('tutor.dashboard', compact('user', 'posts', 'chats', 'teachings'));
+        // Fetch tutor's availabilities for the current week
+        $startOfWeek = Carbon::now()->startOfWeek();
+        $endOfWeek = Carbon::now()->endOfWeek();
+
+        $availabilities = TutorAvailability::where('user_id', $user->id)
+                                            ->whereBetween('date', [$startOfWeek, $endOfWeek])
+                                            ->orderBy('date')
+                                            ->orderBy('start_hour')
+                                            ->get();
+
+        return view('tutor.dashboard', compact('user', 'posts', 'chats', 'teachings', 'availabilities'));
     }
+
 
     // Show chat for students
     public function showChat($chatUserId)
