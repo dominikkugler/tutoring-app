@@ -67,11 +67,17 @@ class MessageController extends Controller
             'post_id' => 'required|exists:posts,id', // Ensure the post exists
         ]);
 
+        // Check if the sender is the same as the recipient (user cannot message themselves)
+        if ($validated['recipient_id'] == Auth::id()) {
+            return redirect()->back()->withErrors(['error' => 'You cannot send a message to yourself.']);
+        }
+
         // Create the new message
         $message = new Message();
         $message->sender_id = Auth::id(); // Set the sender to the logged-in user
         $message->recipient_id = $validated['recipient_id'];
         $message->content = $validated['content'];
+        $message->post_id = $validated['post_id']; // Assuming post_id should be assigned as well
         $message->save(); // Save the message to the database
 
         // Redirect the user with a success message

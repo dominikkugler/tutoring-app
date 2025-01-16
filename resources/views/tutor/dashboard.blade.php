@@ -45,5 +45,41 @@
             @endforeach
         </ul>
     @endif
+
+    <!-- Display tutor's teachings -->
+    <h4>Your Teachings:</h4>
+    <a href="{{ route('teachings.create') }}" class="btn btn-success mb-3">Add New Teaching</a>
+
+    @if($teachings->isEmpty())
+        <p>You are not teaching any subjects yet.</p>
+    @else
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Category</th>
+                    <th>Hourly Rate</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($teachings as $teaching)
+                    <tr>
+                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $teaching->category->name }}</td>
+                        <td>${{ number_format($teaching->rate, 2) }}</td>
+                        <td>
+                            <form action="{{ route('teachings.destroy', $teaching->id) }}" method="POST" style="display: inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this teaching?')">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @endif
+
 </div>
 @endsection

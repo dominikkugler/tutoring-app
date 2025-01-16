@@ -6,31 +6,16 @@
 
     <h3>Welcome, {{ $user->name }}</h3>
 
-    <!-- Display received messages -->
-    <h4>Messages Received:</h4>
-    @if($receivedMessages->isEmpty())
-        <p>No conversations.</p>
+    <!-- Display chats -->
+    <h4>Your Chats:</h4>
+    @if($chats->isEmpty())
+        <p>You have no chats yet.</p>
     @else
         <ul>
-            @foreach($receivedMessages as $message)
+            @foreach($chats as $chat)
                 <li>
-                    <strong>From:</strong> {{ $message->sender->name }}
-                    <a href="{{ route('chat.show', $message->sender->id) }}" class="btn btn-info btn-sm">View</a>
-                </li>
-            @endforeach
-        </ul>
-    @endif
-
-    <!-- Display sent messages -->
-    <h4>Messages Sent:</h4>
-    @if($sentMessages->isEmpty())
-        <p>No conversations.</p>
-    @else
-        <ul>
-            @foreach($sentMessages as $message)
-                <li>
-                    <strong>To:</strong> {{ $message->recipient->name }}
-                    <a href="{{ route('chat.show', $message->recipient->id) }}" class="btn btn-info btn-sm">View</a>
+                    <strong>Chat with:</strong> {{ $chat->name }}
+                    <a href="{{ route('chat.show', $chat->id) }}" class="btn btn-info btn-sm">View</a>
                 </li>
             @endforeach
         </ul>

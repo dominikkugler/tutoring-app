@@ -12,11 +12,23 @@ use Illuminate\Support\Facades\Auth;
     </p>
     <p>
     <strong>Author:</strong> {{ $post->user->name }}
-    <button class="btn btn-sm btn-outline-primary ms-2">
-        <a href="{{ route('messages.create', $post->id) }}">
-        <i class="fas fa-envelope"></i> Send a Message
-        </a>
-    </button>
+
+    <!-- Check if the logged-in user is not the author of the post -->
+    @if(Auth::id() !== $post->user_id)
+        <button class="btn btn-sm btn-outline-primary ms-2">
+            <a href="{{ route('messages.create', $post->id) }}">
+                <i class="fas fa-envelope"></i> Send a Message
+            </a>
+        </button>
+    @else
+        <!-- If the logged-in user is the author, show a button to go to their dashboard -->
+        <button class="btn btn-sm btn-outline-primary ms-2">
+            <a href="{{ Auth::user()->isTutor() ? route('tutor.dashboard') : route('student.dashboard') }}">
+                <i class="fas fa-tachometer-alt"></i> Go to Your Dashboard
+            </a>
+        </button>
+    @endif
+
     </p>
     <p><strong>Phone number:</strong> {{ $post->user->phone }}</p>
     <p><strong>Posted On:</strong> {{ $post->created_at->format('F d, Y') }}</p>
