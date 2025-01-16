@@ -21,6 +21,16 @@ class TutorTeachingController extends Controller
             'rate' => 'required|numeric|min:0',
         ]);
 
+        // Check if the tutor already has a teaching for the given category
+        $existingTeaching = UserTeaching::where('user_id', auth()->id())
+            ->where('category_id', $request->category_id)
+            ->first();
+
+        if ($existingTeaching) {
+            return redirect()->back()->withErrors(['category_id' => 'You already have a teaching for this category.']);
+        }
+
+        // Create the new teaching
         UserTeaching::create([
             'user_id' => auth()->id(),
             'category_id' => $request->category_id,

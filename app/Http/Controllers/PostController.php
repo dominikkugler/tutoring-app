@@ -7,6 +7,7 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\UserTeaching;
 
 class PostController extends Controller
 {
@@ -38,14 +39,19 @@ class PostController extends Controller
 
         $posts = $posts->with(['user', 'category'])->paginate(10);
 
+        // Attach hourly rate to each post
+        foreach ($posts as $post) {
+            $teaching = UserTeaching::where('user_id', $post->user_id)
+                ->where('category_id', $post->category_id)
+                ->first();
+            $post->hourly_rate = $teaching ? $teaching->rate : null;
+        }
+
         // Pass categories to the view
         $categories = Category::all();
 
         return view('posts.index', compact('posts', 'categories'));
     }
-
-
-
 
     /**
      * Show the form for creating a new post.
@@ -84,8 +90,16 @@ class PostController extends Controller
     public function show($id)
     {
         $post = Post::with(['user', 'category'])->findOrFail($id);
+
+        // Fetch the hourly rate for the tutor (if available)
+        $teaching = UserTeaching::where('user_id', $post->user_id)
+            ->where('category_id', $post->category_id)
+            ->first();
+        $post->hourly_rate = $teaching ? $teaching->rate : null;
+
         return view('posts.show', compact('post'));
     }
+
 
 
     /**
