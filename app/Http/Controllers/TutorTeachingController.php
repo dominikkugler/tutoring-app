@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Models\UserTeaching;
 use App\Models\Category;
 
-
 class TutorTeachingController extends Controller
 {
     public function create()
@@ -31,8 +30,10 @@ class TutorTeachingController extends Controller
         return redirect()->route('tutor.dashboard')->with('success', 'Teaching added successfully!');
     }
 
-    public function destroy(UserTeaching $teaching)
+    public function destroy($id)
     {
+        $teaching = UserTeaching::findOrFail($id);
+
         $teaching->delete();
         return redirect()->route('tutor.dashboard')->with('success', 'Teaching removed successfully!');
     }

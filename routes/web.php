@@ -58,7 +58,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/messages', [MessageController::class, 'index'])->name('messages.index'); // Show all messages
 
     // Tutor Teachings routes
-    Route::get('/tutor-teachings', [TutorTeachingController::class, 'index'])->name('teachings.index'); // List all teachings
     Route::get('/tutor-teachings/create', [TutorTeachingController::class, 'create'])->name('teachings.create'); // Show create teaching form
     Route::post('/tutor-teachings', [TutorTeachingController::class, 'store'])->name('teachings.store'); // Add a new teaching
     Route::delete('/tutor-teachings/{id}', [TutorTeachingController::class, 'destroy'])->name('teachings.destroy'); // Delete a teaching
