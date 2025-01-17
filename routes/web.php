@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\TutorTeachingController; // Import the TutorTeachingController
 use App\Http\Controllers\TutorAvailabilityController; // Import the TutorAvailabilityController
+use App\Http\Controllers\BookingController; // Import the BookingController
 
 Route::get('/', function () {
     return view('welcome');
@@ -80,6 +81,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/tutor-teachings/create', [TutorTeachingController::class, 'create'])->name('teachings.create'); // Show create teaching form
     Route::post('/tutor-teachings', [TutorTeachingController::class, 'store'])->name('teachings.store'); // Add a new teaching
     Route::delete('/tutor-teachings/{id}', [TutorTeachingController::class, 'destroy'])->name('teachings.destroy'); // Delete a teaching
+
+    Route::get('/bookings/create', [BookingController::class, 'create'])->name('bookings.create'); // Show create booking form
+    Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store'); // Store a new booking
+    Route::put('/bookings/{booking}/update-status', [BookingController::class, 'updateStatus'])->name('bookings.updateStatus');
+
 });
 
 Route::get('/posts/{id}', [PostController::class, 'show'])->name('posts.show'); // Show single post

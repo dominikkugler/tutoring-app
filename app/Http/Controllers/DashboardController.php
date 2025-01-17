@@ -10,6 +10,7 @@ use App\Models\Message;
 use App\Models\User;
 use App\Models\TutorAvailability;
 use Carbon\Carbon;
+use App\Models\Booking;
 
 
 class DashboardController extends Controller
@@ -44,8 +45,12 @@ class DashboardController extends Controller
                         })
                         ->unique('id');  // Get unique users to display chats
 
-        return view('student.dashboard', compact('user', 'posts', 'chats'));
+        // Get the bookings made by the student (user_id is the student)
+        $bookings = Booking::where('student_id', $user->id)->get();
+
+        return view('student.dashboard', compact('user', 'posts', 'chats', 'bookings'));
     }
+
 
     // Tutor-specific dashboard
     public function tutorDashboard()
@@ -65,6 +70,8 @@ class DashboardController extends Controller
         // Fetch teachings for the tutor
         $teachings = $user->teachings()->with('category')->get();
 
+        $bookings = Booking::where('tutor_id', $user->id)->get();
+
         // Fetch tutor's availabilities for the current week
         $startOfWeek = Carbon::now()->startOfWeek();
         $endOfWeek = Carbon::now()->endOfWeek();
@@ -75,7 +82,9 @@ class DashboardController extends Controller
                                             ->orderBy('start_hour')
                                             ->get();
 
-        return view('tutor.dashboard', compact('user', 'posts', 'chats', 'teachings', 'availabilities'));
+                                            
+
+        return view('tutor.dashboard', compact('user', 'posts', 'chats', 'teachings', 'availabilities', 'bookings'));
     }
 
 

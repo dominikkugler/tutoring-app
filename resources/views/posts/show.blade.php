@@ -46,6 +46,17 @@ use Illuminate\Support\Facades\Auth;
         <p class="text-muted"><strong>Hourly Rate:</strong> Not available</p>
     @endif
 
+    <!-- Book Now button -->
+    @auth
+        @if ($post->user->isTutor() && Auth::user()->isStudent() && Auth::id() !== $post->user_id)
+            <div class="mt-4">
+                <a href="{{ route('bookings.create', ['tutor_id' => $post->user_id, 'category_id' => $post->category_id]) }}" class="btn btn-primary">
+                    Book Now
+                </a>
+            </div>
+        @endif
+    @endauth
+
     <div class="mt-4">
         <a href="{{ route('posts.index') }}" class="btn btn-secondary">Back to All Posts</a>
         @auth

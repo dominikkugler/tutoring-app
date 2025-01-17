@@ -21,6 +21,49 @@
         </ul>
     @endif
 
+    <!-- Display bookings -->
+    <h4>Your Bookings:</h4>
+    @if($bookings->isEmpty())
+        <p>You have not made any bookings yet.</p>
+    @else
+        <div class="table-responsive mb-4">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Tutor</th>
+                        <th>Category</th>
+                        <th>Date</th>
+                        <th>Start Hour</th>
+                        <th>End Hour</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($bookings as $booking)
+                        <tr>
+                            <td>{{ $booking->tutor->name }}</td>
+                            <td>{{ $booking->category->name }}</td>
+                            <td>{{ $booking->date }}</td>
+                            <td>{{ $booking->start_hour }}</td>
+                            <td>{{ $booking->end_hour }}</td>
+                            <td>
+                                @if($booking->status === 'pending')
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                @elseif($booking->status === 'accepted')
+                                    <span class="badge bg-success">Accepted</span>
+                                @elseif($booking->status === 'rejected')
+                                    <span class="badge bg-danger">Rejected</span>
+                                @else
+                                    <span class="badge bg-secondary">Unknown</span>
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    @endif
+
     <!-- Display user's posts -->
     <h4>Your Posts:</h4>
     @if($posts->isEmpty())

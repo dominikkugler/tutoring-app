@@ -31,6 +31,63 @@
         </div>
     </div>
 
+    <!-- Display bookings for the tutor -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>Your Bookings</h4>
+        </div>
+        <div class="card-body">
+            @if($bookings->isEmpty())
+                <p>You have no bookings yet.</p>
+            @else
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Category</th>
+                            <th>Date</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($bookings as $booking)
+                            <tr>
+                                <td>{{ $booking->student->name }}</td>
+                                <td>{{ $booking->category->name }}</td>
+                                <td>{{ \Carbon\Carbon::parse($booking->date)->format('l, F d, Y') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($booking->start_hour)->format('h:i A') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($booking->end_hour)->format('h:i A') }}</td>
+                                <td>
+                                    @if($booking->status === 'pending')
+                                        <span class="badge bg-warning text-dark">Pending</span>
+                                    @elseif($booking->status === 'accepted')
+                                        <span class="badge bg-success">Accepted</span>
+                                    @elseif($booking->status === 'rejected')
+                                        <span class="badge bg-danger">Rejected</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    <form action="{{ route('bookings.updateStatus', $booking->id) }}" method="POST" style="display: inline;">
+                                        @csrf
+                                        @method('PUT')
+                                        <select name="status" class="form-control form-control-sm" onchange="this.form.submit()">
+                                            <option value="pending" {{ $booking->status === 'pending' ? 'selected' : '' }}>Pending</option>
+                                            <option value="accepted" {{ $booking->status === 'accepted' ? 'selected' : '' }}>Accepted</option>
+                                            <option value="rejected" {{ $booking->status === 'rejected' ? 'selected' : '' }}>Rejected</option>
+                                        </select>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @endif
+        </div>
+    </div>
+
     <!-- Display tutor's posts -->
     <div class="card mb-4">
         <div class="card-header">
