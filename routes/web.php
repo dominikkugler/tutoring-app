@@ -24,6 +24,15 @@ Route::get('/posts', [PostController::class, 'index'])->name('posts.index'); // 
 
 // Authenticated Routes
 Route::middleware(['auth'])->group(function () {
+    Route::get('/admin-dashboard', function () {
+        if (auth()->user()->isAdmin()) {
+            return app(DashboardController::class)->adminDashboard();
+        }
+        return redirect('/')->with('error', 'You are not authorized to access this page.');
+    })->name('admin.dashboard');
+    // Admin management routes
+    Route::delete('/admin-dashboard/{user}', [DashboardController::class, 'destroy'])->name('admin.users.destroy');
+
     // Post management
     Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create'); // Show create form
     Route::post('/posts', [PostController::class, 'store'])->name('posts.store'); // Store new post

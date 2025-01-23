@@ -39,15 +39,36 @@
                             </div>
                         </div>
 
-                        <!-- Add this field if you want the user to enter a phone number -->
-                        <input type="text" name="phone" placeholder="Phone number">
+                        <div class="row mb-3">
+                            <label for="phone" class="col-md-4 col-form-label text-md-end">{{ __('Phone Number') }}</label>
 
-                        <!-- Add this field if you want the user to select a role -->
-                        <select name="role">
-                            <option value="student" selected>Student</option>
-                            <option value="tutor">Tutor</option>
-                        </select>
+                            <div class="col-md-6">
+                                <input id="phone" type="text" class="form-control @error('phone') is-invalid @enderror" name="phone" value="{{ old('phone') }}" required>
 
+                                @error('phone')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <label for="role" class="col-md-4 col-form-label text-md-end">{{ __('Role') }}</label>
+
+                            <div class="col-md-6">
+                                <select id="role" class="form-select @error('role') is-invalid @enderror" name="role" required>
+                                    <option value="student" {{ old('role') == 'student' ? 'selected' : '' }}>Student</option>
+                                    <option value="tutor" {{ old('role') == 'tutor' ? 'selected' : '' }}>Tutor</option>
+                                </select>
+
+                                @error('role')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
 
                         <div class="row mb-3">
                             <label for="password" class="col-md-4 col-form-label text-md-end">{{ __('Password') }}</label>

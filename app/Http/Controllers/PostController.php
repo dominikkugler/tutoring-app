@@ -18,6 +18,7 @@ class PostController extends Controller
     {
         $filter = $request->get('filter'); // Role filter (tutor/student)
         $categoryId = $request->get('category'); // Category filter
+        $search = $request->get('search'); // Search query
 
         $posts = Post::query();
 
@@ -37,6 +38,14 @@ class PostController extends Controller
             $posts->where('category_id', $categoryId);
         }
 
+        // Search by title or content
+        if ($search) {
+            $posts->where(function ($query) use ($search) {
+                $query->where('title', 'like', '%' . $search . '%')
+                    ->orWhere('content', 'like', '%' . $search . '%');
+            });
+        }
+
         $posts = $posts->with(['user', 'category'])->paginate(10);
 
         // Attach hourly rate to each post
@@ -52,7 +61,6 @@ class PostController extends Controller
 
         return view('posts.index', compact('posts', 'categories'));
     }
-
     /**
      * Show the form for creating a new post.
      */

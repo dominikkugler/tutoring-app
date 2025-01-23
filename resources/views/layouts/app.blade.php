@@ -21,6 +21,34 @@ use Illuminate\Support\Facades\Route;
 
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+
+    <script>
+        // Funkcja do zmiany rozmiaru czcionki
+        function resizeText(action) {
+            const rootElement = document.documentElement; // Pobierz element <html>
+            const currentSize = parseFloat(getComputedStyle(rootElement).fontSize); // Pobierz aktualny rozmiar czcionki
+            let newSize;
+
+            if (action === 'increase') {
+                newSize = currentSize + 2; // Zwiększ rozmiar o 2px
+            } else if (action === 'decrease') {
+                newSize = currentSize - 2; // Zmniejsz rozmiar o 2px
+            } else if (action === 'reset') {
+                newSize = 16; // Resetuj do domyślnego (16px)
+            }
+
+            rootElement.style.fontSize = newSize + 'px'; // Ustaw nowy rozmiar
+            localStorage.setItem('fontSize', newSize + 'px'); // Zapisz preferencję w localStorage
+        }
+
+        // Ustaw zapisany rozmiar czcionki przy ładowaniu strony
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedFontSize = localStorage.getItem('fontSize');
+            if (savedFontSize) {
+                document.documentElement.style.fontSize = savedFontSize;
+            }
+        });
+    </script>
 </head>
 <body>
     <div id="app">
@@ -41,6 +69,11 @@ use Illuminate\Support\Facades\Route;
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
+                        <li class="nav-item d-flex align-items-center">
+                            <button onclick="resizeText('decrease')" class="btn btn-outline-secondary btn-sm mx-1">A-</button>
+                            <button onclick="resizeText('reset')" class="btn btn-outline-secondary btn-sm mx-1">A</button>
+                            <button onclick="resizeText('increase')" class="btn btn-outline-secondary btn-sm mx-1">A+</button>
+                        </li>
                         <!-- Authentication Links -->
                         @guest
                             @if (Route::has('login'))
@@ -63,6 +96,10 @@ use Illuminate\Support\Facades\Route;
                             @elseif(Auth::user()->role == 'tutor')
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('tutor.dashboard') }}">{{ __('Tutor Dashboard') }}</a>
+                                </li>
+                            @elseif(Auth::user()->role == 'admin')
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('admin.dashboard') }}">{{ __('Admin Dashboard') }}</a>
                                 </li>
                             @endif
 

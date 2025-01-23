@@ -56,3 +56,8 @@
     <form action="{{ route('chat.send', $chatUser->id) }}" method="POST" class="mt-3">
         @csrf
         <textarea name="message" class="form-control mb-2" rows="3" place
+            holder="Type your message here"></textarea>
+        <button type="submit" class="btn btn-primary">Send</button>
+    </form>
+</div>
+@endsection

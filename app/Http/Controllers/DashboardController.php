@@ -87,6 +87,50 @@ class DashboardController extends Controller
         return view('tutor.dashboard', compact('user', 'posts', 'chats', 'teachings', 'availabilities', 'bookings'));
     }
 
+    public function adminDashboard()
+    {
+        $user = Auth::user();
+
+        $users = User::paginate(10);
+
+        return view('admin.dashboard', compact('users'));
+    }
+
+    public function manageUsers()
+    {
+        $user = Auth::user();
+
+        if ($user->role != 'admin') {
+            return redirect('/');  // Only admins can manage users
+        }
+
+        // Get all users
+        $users = User::all();
+
+        return view('admin.users', compact('user', 'users'));
+    }
+
+    public function destroy(User $user)
+    {
+        $logged_user = Auth::user();
+        if ($logged_user->role != 'admin') {
+            return redirect('/');  // Only admins can delete users
+        }
+
+        try {
+            // Ensure the admin cannot delete themselves
+            if (auth()->id() === $user->id) {
+                return redirect()->route('admin.dashboard')->with('error', 'You cannot delete your own account.');
+            }
+
+            // Delete the user
+            $user->delete();
+
+            return redirect()->route('admin.dashboard')->with('success', 'User deleted successfully.');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.dashboard')->with('error', 'An error occurred while deleting the user.');
+        }
+    }
 
     // Show chat for students
     public function showChat($chatUserId)
